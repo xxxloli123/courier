@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+    <TextView
+        android:id="@+id/order_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="订单号：1234567891011121314"
+        android:textColor="@color/text_color"
+        android:textSize="14sp"/>
+    <TextView
+        android:id="@+id/order_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="2015-02-13 12:30:03"
+        android:textColor="@color/hint_text_color"
+        android:textSize="12sp"
+        android:layout_marginTop="4dp"/>
+    <TextView
+        android:id="@+id/balance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="余额：999.99"
+        android:textColor="@color/text_color"
+        android:textSize="12sp"
+        android:layout_marginTop="4dp"/>
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="+99.99"
+        android:textColor="@color/text_color"
+        android:textSize="14sp"
+        android:gravity="right"/>
+</LinearLayout>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <FrameLayout
+        android:id="@+id/menus_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:layout_above="@+id/view">
+
+    </FrameLayout>
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/line_color"
+        android:layout_above="@+id/group"/>
+    <RadioGroup
+        android:id="@+id/group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:gravity="center"
+        android:layout_alignParentBottom="true">
+
+        <RadioButton
+            android:id="@+id/distribution"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:background="?attr/selectableItemBackground"
+            android:checked="true"
+            android:gravity="center"
+            android:drawableTop="@drawable/selectes1"
+            android:text="配送单"
+            android:textSize="12sp"
+            android:textColor="@drawable/select_textcolor"
+            android:drawablePadding="2dp"/>
+        <RadioButton
+            android:id="@+id/paren"
+            android:layout_width="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:gravity="center"
+            android:background="?attr/selectableItemBackground"
+            android:drawableTop="@drawable/selectes2"
+            android:text="个人中心"
+            android:textSize="12sp"
+            android:textColor="@drawable/select_textcolor"
+            android:drawablePadding="2dp"/>
+    </RadioGroup>
+</RelativeLayout>
+

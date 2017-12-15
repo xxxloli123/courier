@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:gravity="center">
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:background="@color/blue"
+        android:layout_height="40dp"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:clickable="true">
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/white"
+            android:gravity="center_vertical"
+            android:text="选择省份"
+            android:textSize="15dp"/>
+    </LinearLayout>
+    <ListView
+        android:id="@+id/list_dz"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+    </ListView>
+    <LinearLayout
+        android:id="@+id/linear_qd"
+        android:orientation="horizontal"
+        android:background="@color/blue"
+        android:layout_height="40dp"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:clickable="true">
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/white"
+            android:gravity="center_vertical"
+            android:text="确定"
+            android:textSize="15dp"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">惠递快递员端</string>
+    <string name="agree">我已阅读并同意《掌升活快递员用户协议》</string>
+    <string name="balance_problem_title1">Q1:使用余额的条件</string>
+    <string name="balance_problem_details1">为了保护账户安全，使用余额前必须先绑定手机号。</string>
+    <string name="balance_problem_title2">Q2:余额可以怎么用？</string>
+    <string name="balance_problem_details2">余额可以在掌升活平台上提现，当余额大于等于待支付金额时可以在支持在线支付的商家中进行消费。</string>
+    <string name="balance_problem_title3">Q3:我要如何提现？</string>
+    <string name="balance_problem_details3">为了保护账户和资金安全，您在提现前需要输入真实姓名和用该姓名开通的银行卡号、选择开户行，并验证已绑定掌升活账号的手机号。每日只能提现一次，每次限额50元。若提现金额超过50元，点击【提现】时系统会提示您已超额，请你修改提现金额。</string>
+    <string name="balance_problem_title4">Q4:为什么会提现失败？</string>
+    <string name="balance_problem_details4">可能原因有：您的姓名、开户行、银行卡号等信息不匹配；您当日的提现次数和金额超过限制；您的账户存在异常，被拦截了。</string>
+    <string name="rule_declaration_title1">Q1:配送规则</string>
+    <string name="rule_declaration_title2">Q1:资金规则</string>
+    <string name="rule_declaration_title3">Q1:提现须知</string>
+    <string name="rule_declaration_title4">Q1:绑定信息</string>
+    <string name="active_rule1">1、红包/验证码/预约劵仅限购买meilele.com官网使用，不能兑换成现金。</string>
+    <string name="active_rule2">2、每个订单只能使用一个红包/验证码/预约劵。</string>
+    <string name="active_rule3">3、在有效使用时间内使用，过期未使用作废。</string>
+    <string name="active_rule4">4、不找零、不折现，限一次性使用完（不能抵扣快递、物流或服务费），如使用后发生退款，红包/验证码/预约劵金额不作为退款项。</string>
+    <string name="active_rule5">5、订单内收货人手机需与获取到红包/验证码/预约劵时填写的手机号相同，同时满足对应红包/验证码/预约劵最小订单金额即可使用（体验馆特卖、团购、拍卖、秒杀产品及第三方配送产品除外），每个订单限用1张，不能与其他红包、验证码、预约劵等代金券一起使用。</string>
+    <string name="active_rule6">6、红包/验证码/预约劵支付部分不开发票。</string>
+
+</resources>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingRight="16dp"
+    android:paddingLeft="16dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:gravity="center_vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.android.slowlifecourier.view.RatingBar
+            xmlns:lxhRatingBar="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            lxhRatingBar:canEdit="false"
+            lxhRatingBar:countSelected="4"
+            lxhRatingBar:dividerWidth="1dp"
+            lxhRatingBar:starCount="5"
+            lxhRatingBar:stateResId="@drawable/five_rating_bar"
+            lxhRatingBar:widthAndHeight="10dp" />
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="2017-1-22 14:11"
+            android:textColor="@color/hint1_text_color"
+            android:textSize="11sp" />
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="2dp"
+        android:text="商品还是不错的我很满意向往下次海恩那个和错"
+        android:textColor="@color/text_color"
+        android:textSize="11sp" />
+</LinearLayout>

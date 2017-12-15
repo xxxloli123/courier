@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/text_color"
+        android:text="用户评论" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line_color"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <com.android.slowlifecourier.view.RatingBar
+            xmlns:lxhRatingBar="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            lxhRatingBar:canEdit="false"
+            lxhRatingBar:countSelected="4"
+            lxhRatingBar:dividerWidth="1dp"
+            lxhRatingBar:starCount="5"
+            lxhRatingBar:stateResId="@drawable/five_rating_bar"
+            lxhRatingBar:widthAndHeight="10dp" />
+        <TextView
+            android:id="@+id/score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="5分"
+            android:textColor="@color/hint1_text_color"
+            android:textSize="12sp"
+            android:layout_marginLeft="6dp"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/remarks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="备注：送货快 准时达 送货上门 服务态度好"
+        android:textColor="@color/text_color"
+        android:textSize="12sp"
+        android:layout_marginTop="6dp"/>
+</LinearLayout>
