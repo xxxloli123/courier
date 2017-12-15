@@ -138,6 +138,7 @@ public class FragOrderList extends BaseFragment implements SwipeRefreshLayout.On
                 if (orders == null) orders = new ArrayList<>();
                 if (page == 1 && !orders.isEmpty()) orders.clear();
                 JSONArray arr = json.getJSONObject("ordersInfo").getJSONArray("aaData");
+                Log.e("order","丢了个雷姆"+arr);
                 Gson gson = new Gson();
                 for (int i = 0; i < arr.length(); i++) {
                     final JSONObject cache = arr.getJSONObject(i);

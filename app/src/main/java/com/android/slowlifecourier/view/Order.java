@@ -111,6 +111,7 @@ public class Order {
 
     private void init(OrderEntity order) {
         if (order == null) return;
+        if (order.getGoodsName()!=null)commodityTV.setText(order.getGoodsName());
         if (order.getTradeImg()!=null)Picasso.with(act).load(Config.Url.getUrl(Config.Order_Img) + order.getTradeImg())
                 .into(img);
         Log.e("getTradeImg","丢了个雷姆"+order.getTradeImg());

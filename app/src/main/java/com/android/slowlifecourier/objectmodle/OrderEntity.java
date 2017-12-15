@@ -88,6 +88,7 @@ public class OrderEntity extends ParcelableUtil<OrderEntity> {
      */
 
     private String id;
+    private String goodsName;
     private String orderNumber;
     private String createDate;
     private String createUserId;
@@ -689,6 +690,14 @@ public class OrderEntity extends ParcelableUtil<OrderEntity> {
 
     public void setOrderRecord(List<OrderRecordBean> orderRecord) {
         this.orderRecord = orderRecord;
+    }
+
+    public String getGoodsName() {
+        return goodsName;
+    }
+
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
     }
 
     public static class OrderRecordBean extends ParcelableUtil<OrderEntity> {

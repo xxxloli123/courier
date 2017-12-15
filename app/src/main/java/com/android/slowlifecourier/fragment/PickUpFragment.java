@@ -54,7 +54,6 @@ public class PickUpFragment extends FragOrderList implements AdapterView.OnItemC
         super();
     }
 
-
     public PickUpFragment(String rob, String status) {
         super(rob, status);
     }

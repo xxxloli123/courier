@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.slowlifecourier.R;
+import com.android.slowlifecourier.bluetoothprint.util.ToastUtil;
 import com.android.slowlifecourier.objectmodle.OrdersEntity;
 import com.android.slowlifecourier.objectmodle.PayStatus;
 import com.android.slowlifecourier.util.LogoConfig;
