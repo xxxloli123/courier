@@ -56,6 +56,7 @@ public class UnPayedFrag extends FragOrderList {
         protected void setData(View view, final OrderEntity order, int position) {
             super.setData(view, order, position);
             final ViewHolder holder = (ViewHolder) view.getTag();
+            holder.grabSingle.setVisibility(View.GONE);
             if (TextUtils.equals(order.getPayType(), "Cash")) {
                 holder.grabSingle.setText("确认收款");
                 if (holder.afjoaiej.getVisibility() == View.VISIBLE)
@@ -63,7 +64,6 @@ public class UnPayedFrag extends FragOrderList {
                 holder.grabSingle.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
                         MessageDialog dialog = new MessageDialog(getContext());
                         dialog.show();
                         dialog.setListener(new MessageDialog.DialogButtonClickListener() {
@@ -99,7 +99,6 @@ public class UnPayedFrag extends FragOrderList {
 
             /**
              * 未支付状态（现金都没有）
-             *
              * */
             else {
                 if (TextUtils.equals(order.getStatus(), "UnPayed")) {
@@ -148,7 +147,6 @@ public class UnPayedFrag extends FragOrderList {
                         holder.alreadyDelivery.setClickable(false);
                     }
                 });
-
             }
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

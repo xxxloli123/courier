@@ -36,14 +36,11 @@ public class OrdersAdapter extends FragmentPagerAdapter {
                 if (pickUpFragment == null)
                     pickUpFragment = new PickUpFragment(null, "ReceivedOrder");
                 return pickUpFragment;
-//            case 2:
-//                if (unpayedFrag == null)
-//                    unpayedFrag = new UnPayedFrag(null, "UnPayed");
-//                return unpayedFrag;
             case 2:
-                if (servedFragment == null)
-                    servedFragment = new ServedFragment(null, "GoodsDelivery");
-                return servedFragment;
+                if (unpayedFrag == null)
+                    unpayedFrag = new UnPayedFrag(null, "UnPayed");
+                return unpayedFrag;
+
             default:
                 return null;
         }

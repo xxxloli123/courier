@@ -86,6 +86,7 @@ public class PrintOrder {
     private String orderNumber;
     private String comment;
     private String orderOfCompanyId;
+    private String tradeImg;
 
     public String getEndPro() {
         return endPro;
@@ -397,5 +398,13 @@ public class PrintOrder {
 
     public void setOrderOfCompanyId(String orderOfCompanyId) {
         this.orderOfCompanyId = orderOfCompanyId;
+    }
+
+    public String getTradeImg() {
+        return tradeImg;
+    }
+
+    public void setTradeImg(String tradeImg) {
+        this.tradeImg = tradeImg;
     }
 }

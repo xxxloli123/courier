@@ -22,7 +22,6 @@ import com.android.slowlifecourier.R;
 import com.android.slowlifecourier.activity.OrderDetailsActivity;
 import com.android.slowlifecourier.adapter.BillAdapter;
 import com.android.slowlifecourier.app.MyApplication;
-import com.android.slowlifecourier.bluetoothprint.util.ToastUtil;
 import com.android.slowlifecourier.objectmodle.Info;
 import com.android.slowlifecourier.objectmodle.OrderEntity;
 import com.interfaceconfig.Config;
@@ -102,18 +101,31 @@ public class Order {
     private String urgentExpense, urgentCostFQ, endStreet;
     private double weight;
 
-    public Order(OrderDetailsActivity act, OrderEntity order, String urgentCost) {
+    public Order(OrderDetailsActivity act, OrderEntity orderEntity, String urgentCost, boolean isFirst) {
         this.act = act;
         content = LayoutInflater.from(act).inflate(R.layout.item_order_content, null);
         ButterKnife.bind(this, content);
-        init(order);
+        if (!isFirst){
+            orderEntity.setReceiverName("");
+            orderEntity.setReceiverPhone("");
+            orderEntity.setEndPro("");
+            orderEntity.setEndCity("");
+            orderEntity.setEndDistrict("");
+            orderEntity.setEndStreet("");
+            orderEntity.setEndLat(0.0d);
+            orderEntity.setEndLng(0.0d);
+            orderEntity.setEndHouseNumber("");
+            orderEntity.setUrgent("");
+            orderEntity.setTradeImg(null);
+        }
+        init(orderEntity);
     }
 
     private void init(OrderEntity order) {
         if (order == null) return;
         if (order.getGoodsName()!=null)commodityTV.setText(order.getGoodsName());
-        if (order.getTradeImg()!=null)Picasso.with(act).load(Config.Url.getUrl(Config.Order_Img) + order.getTradeImg())
-                .into(img);
+        if (order.getTradeImg()!=null)Picasso.with(act).load(Config.Url.getUrl(Config.Order_Img)
+                + order.getTradeImg()).into(img);
         Log.e("getTradeImg","丢了个雷姆"+order.getTradeImg());
 //        ToastUtil.showToast(act,order.getTradeImg()+"");
         this.order = order;

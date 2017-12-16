@@ -35,7 +35,6 @@ public class OrderListAdapter extends BaseAdapter<OrderEntity> {
         this.enable = enable;
     }
 
-
     @Override
     protected void setData(final View view, final OrderEntity order, int position) {
         ViewHolder holder = (ViewHolder) view.getTag();
@@ -254,7 +253,6 @@ public class OrderListAdapter extends BaseAdapter<OrderEntity> {
         holder.commpanyName.setText(order.getUserChoiceCommpanyName());
         if (!enable) view.findViewById(R.id.fjaoeijfaoiejf).setVisibility(View.GONE);
     }
-
 
     @Override
     protected VH newViewHolder(View v) {

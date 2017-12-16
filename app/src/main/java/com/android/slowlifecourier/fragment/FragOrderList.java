@@ -145,6 +145,7 @@ public class FragOrderList extends BaseFragment implements SwipeRefreshLayout.On
                     orders.add(orders.size(), gson.fromJson(cache.toString(), OrderEntity.class));
                 }
                 adapter.notifyDataSetChanged(orders);
+                if (noOrder!=null)
                 if (orders.isEmpty()) noOrder.setVisibility(View.VISIBLE);
                 else noOrder.setVisibility(View.GONE);
                 srl.setRefreshing(false);

@@ -145,6 +145,7 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
     private JSONObject proObject, ctiyObject, districtObject;
     private String urgentCost;
     BluetoothAdapter mAdapter;
+    private boolean isHave;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -284,20 +285,7 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
                 finish();
                 break;
             case R.id.sure_bt:
-                MessageDialog dialog = new MessageDialog(getContext());
-                dialog.show();
-                dialog.setMessage("确定取货吗?");
-                dialog.setListener(new MessageDialog.DialogButtonClickListener() {
-                    @Override
-                    public void done(Dialog dialog) {
-                        submit();
-                        dialog.dismiss();
-                    }
-                    @Override
-                    public void cancel(Dialog dialog) {
-                        dialog.dismiss();
-                    }
-                });
+                submit();
                 break;
             case R.id.quality_layout:
                 break;
@@ -309,7 +297,7 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
 
     private void printOrder(PrintOrder printOrder) {
         if (TextUtils.isEmpty(AppInfo.btAddress)){
-            ToastUtil.showToast(this,"已自动接单。。。\n如需打印订单请开启打印机功能");
+            ToastUtil.showToast(this,"已接单。。。\n如需打印订单请开启打印机功能");
             return;
         }
         if (mAdapter.getState()== BluetoothAdapter.STATE_OFF ){//蓝牙被关闭时强制打开
@@ -325,50 +313,58 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
     }
 
     private void submit() {
-
-        Info info = ((MyApplication) getApplication()).getInfo();
-        JSONArray arr = new JSONArray();
-        MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        final Info info = ((MyApplication) getApplication()).getInfo();
+        final JSONArray arr = new JSONArray();
+        final MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         FileInputStream fis = null;
         ByteArrayOutputStream baos = null;
         if (viewList.isEmpty() || viewList.size() == 0) {
             Toast.makeText(this, "请添加包裹", Toast.LENGTH_SHORT).show();
             return;
         }
-        for (Order order : viewList) {
+//        for (Order order : viewList) {
+        for (int i=0;i<viewList.size();i++){
+            Order order=viewList.get(i);
             try {
-
                 final JSONObject data = order.getData();
                 if (data == null) {
                     scrollView.scrollTo(0, order.getTop());
                     return;
                 }
-                PrintOrder printOrder=new Gson().fromJson(data.toString(),PrintOrder.class);
-                printOrder(printOrder);
                 if (arr.length() == 0) {
                     data.put("id", this.order.getId());
                 }
                 arr.put(data);
-                if (TextUtils.equals(this.order.getType(), "CityWide")) continue;
+                PrintOrder printOrder=new Gson().fromJson(data.toString(),PrintOrder.class);
+                if (TextUtils.equals(this.order.getType(), "CityWide")) {
+                    printOrder(printOrder);
+                    continue;
+                }
                 final String path = order.getImgPath();
-                if (isEmpty(path)) {
-                    Toast.makeText(this, "请选择物流快照", Toast.LENGTH_SHORT).show();
+                Log.e("getTradeImg","submit"+this.order.getTradeImg());
+                if ((!isHave)&&isEmpty(path)) {
+                    Toast.makeText(this, i+"请选择物流快照"+printOrder.getEndHouseNumber(), Toast.LENGTH_SHORT).show();
                     scrollView.smoothScrollTo(0, (order.getTop()));
                     return;
                 }
-                final File file = new File(path);
-                fis = new FileInputStream(file);
-                baos = new ByteArrayOutputStream();
-                int len;
-                final byte[] buff = new byte[1024];
-                while ((len = fis.read(buff)) > 0) {
-                    baos.write(buff, 0, len);
-                    baos.flush();
+
+                printOrder(printOrder);
+                if (!isEmpty(path)){
+                    final File file = new File(path);
+                    fis = new FileInputStream(file);
+                    baos = new ByteArrayOutputStream();
+                    int len;
+                    final byte[] buff = new byte[1024];
+                    while ((len = fis.read(buff)) > 0) {
+                        baos.write(buff, 0, len);
+                        baos.flush();
+                    }
+                    final RequestBody fileData = RequestBody.create(MediaType.parse("application/octet-stream"),
+                            baos.toByteArray());
+                    requestBodyBuilder.addFormDataPart("pictures", file.getName(), fileData);
+                    fis.close();
+                    baos.close();
                 }
-                final RequestBody fileData = RequestBody.create(MediaType.parse("application/octet-stream"), baos.toByteArray());
-                requestBodyBuilder.addFormDataPart("pictures", file.getName(), fileData);
-                fis.close();
-                baos.close();
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
@@ -384,40 +380,53 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
                 }
             }
         }
+
         System.out.println(arr.toString());
-        Map<String, Object> params = new HashMap<>();
+        final Map<String, Object> params = new HashMap<>();
         params.put("userId", info.getId());
         params.put("orderStr", arr);
         params.put("type", order.getType());
-        String url = null;
-        if (TextUtils.equals(order.getType(), "CityWide")) {
-            url = Config.Url.getUrl(Config.ORDERTOTALCITYWIDE);
-            newCall(url, params);
-        } else {
+        MessageDialog dialog = new MessageDialog(getContext());
+        dialog.show();
+        dialog.setMessage("确定取货吗?");
+        dialog.setListener(new MessageDialog.DialogButtonClickListener() {
+            @Override
+            public void done(Dialog dialog) {
+                String url = null;
+                if (TextUtils.equals(order.getType(), "CityWide")) {
+                    url = Config.Url.getUrl(Config.ORDERTOTALCITYWIDE);
+                    newCall(url, params);
+                } else {
 //            requestBodyBuilder.addFormDataPart("userId", info.getId())
 //                    .addFormDataPart("orderStr", arr.toString());
-            Request.Builder builder = new Request.Builder().url(Config.Url.getUrl(Config.ORDERTOTALINTERCITY))
-                    .method("POST", requestBodyBuilder.build());
-            new OkHttpClient().newCall(builder.build()).enqueue(new SimpleCallback(OrderDetailsActivity.this) {
-                @Override
-                public void onSuccess(String tag, JSONObject json) throws JSONException {
-                    Toast.makeText(OrderDetailsActivity.this, json.getString("message"), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent();
-                    intent.putExtra("position", position);
-                    setResult(Activity.RESULT_OK, intent);
-
-                    finish();
-                    sureBt.setEnabled(true);
+//            Request.Builder builder = new Request.Builder().url(Config.Url.getUrl(Config.ORDERTOTALINTERCITY))
+//                    .method("POST", requestBodyBuilder.build());
+//            new OkHttpClient().newCall(builder.build()).enqueue(new SimpleCallback(OrderDetailsActivity.this) {
+//                @Override
+//                public void onSuccess(String tag, JSONObject json) throws JSONException {
+//                    Toast.makeText(OrderDetailsActivity.this, json.getString("message"), Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent();
+//                    intent.putExtra("position", position);
+//                    setResult(Activity.RESULT_OK, intent);
+//                    finish();
+//                    sureBt.setEnabled(true);
+//                }
+//            });
+                    url = Config.Url.getUrl(Config.ORDERTOTALINTERCITY);
+                    requestBodyBuilder.addFormDataPart("userId", info.getId())
+                            .addFormDataPart("orderStr", arr.toString());
+                    Request.Builder builder = new Request.Builder().url(url).method("POST", requestBodyBuilder.build())
+                            .tag(url.substring(Config.HOST.length(), url.length()));
+                    newCall(builder.build());
                 }
-            });
-//            url = Config.Url.getUrl(Config.ORDERTOTALINTERCITY);
-//            requestBodyBuilder.addFormDataPart("userId", info.getId())
-//                    .addFormDataPart("orderStr", arr.toString());
-//            Request.Builder builder = new Request.Builder().url(url).method("POST", requestBodyBuilder.build())
-//                    .tag(url.substring(Config.HOST.length(), url.length()));
-//            newCall(builder.build());
-        }
-//        sureBt.setEnabled(false);
+                sureBt.setEnabled(false);
+                dialog.dismiss();
+            }
+            @Override
+            public void cancel(Dialog dialog) {
+                dialog.dismiss();
+            }
+        });
     }
 
     @Override
@@ -438,11 +447,8 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
                 tag.setImgPath(cache.getAbsolutePath());
                 Log.e("什么鬼","");
                 break;
-
         }
-        super.
-
-                onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -455,18 +461,17 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
         switch (tag.toString()) {
             case Config.ORDERDETAILS:
                 order = new Gson().fromJson(json.getString("order"), OrderEntity.class);
+                isHave = order.getTradeImg() != null;
                 initViews();
                 break;
-
+            case Config.ORDERTOTALINTERCITY:
             case Config.ORDERTOTALCITYWIDE:
                 Toast.makeText(this, json.getString("message"), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.putExtra("position", position);
                 setResult(Activity.RESULT_OK, intent);
                 finish();
-                sureBt.setEnabled(true);
                 break;
-
             case Config.AREAINFO:
                 System.out.println(json);
                 areaList = json.getJSONArray("tariff");
@@ -531,7 +536,6 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
         mLocMarker = aMap.addMarker(options);
     }
 
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt("position", position);
@@ -567,7 +571,6 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
 //            Toast.makeText(this, errText, Toast.LENGTH_SHORT).show();
         }
     }
-
 
     public void showAreaDialog(Order order, int selectPosition) {
         tag = order;
@@ -626,7 +629,6 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
         }
     }
 
-
     class AreaAdapter extends BaseAdapter {
 
         private int pad;
@@ -678,34 +680,32 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
         }
 
     }
+
     private void initOrder(){
-        Order order = new Order(this, this.order,urgentCost);
+        Order order = new Order(this, this.order,urgentCost,true);
         order.setTop(scrollView.getChildAt(0).getMeasuredHeight());
         orderlist.addView(order.getContent());
         viewList.add(order);
     }
 
     private void addOrder() {
-        OrderEntity orderEntity=order;
-        orderEntity.setReceiverName("");
-        orderEntity.setReceiverPhone("");
-        orderEntity.setEndPro("");
-        orderEntity.setEndCity("");
-        orderEntity.setEndDistrict("");
-        orderEntity.setEndStreet("");
-        orderEntity.setEndLat(0.0d);
-        orderEntity.setEndLng(0.0d);
-        orderEntity.setEndHouseNumber("");
-        orderEntity.setUrgent("");
+        Log.e("getTradeImg add","add"+order.getTradeImg());
+        OrderEntity orderEntity= null;
+        try {
+            orderEntity = (OrderEntity) order.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
         if (!TextUtils.equals(orderEntity.getType(), "CityWide")) {
             orderEntity.setWeight(1);
         }else {
             orderEntity.setWeight(5);
         }
-        Order order = new Order(this, orderEntity,urgentCost);
+        Order order = new Order(this, orderEntity,urgentCost, false);
         order.setTop(scrollView.getChildAt(0).getMeasuredHeight());
         orderlist.addView(order.getContent());
         viewList.add(order);
+        Log.e("getTradeImg add","add  2   "+orderEntity.getTradeImg());
     }
 
     public void cutImg(Order order) {
@@ -837,6 +837,7 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
             }
         });
     }
+
     public void setUrgentCostFQ(Order o){
         tag=o;
         tag.setUrgentCost(urgentCost);

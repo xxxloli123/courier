@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.android.slowlifecourier.fragment.CompleteFrag;
 import com.android.slowlifecourier.fragment.FragOrderList;
+import com.android.slowlifecourier.fragment.ServedFragment;
 import com.android.slowlifecourier.fragment.UnPayedFrag;
 
 import java.util.ArrayList;
@@ -35,8 +36,11 @@ public class JobSummaryAdapter extends FragmentPagerAdapter {
                 allOrderFragment = new CompleteFrag();
                 return allOrderFragment;
             case 2:
-                allOrderFragment = new UnPayedFrag(null, "UnPayed");
+                allOrderFragment = new ServedFragment(null, "GoodsDelivery");
                 return allOrderFragment;
+//            case 2:
+//                allOrderFragment = new UnPayedFrag(null, "UnPayed");
+//                return allOrderFragment;
 //            case 2:
 //                allOrderFragment = new FragOrderList(null, "CancelOrder", "CityWide,Intercity", false);
 //                return allOrderFragment;

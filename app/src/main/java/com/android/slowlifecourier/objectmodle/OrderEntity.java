@@ -12,7 +12,7 @@ import java.util.List;
  * e-mail: sgrape1153@gmail.com
  */
 
-public class OrderEntity extends ParcelableUtil<OrderEntity> {
+public class OrderEntity extends ParcelableUtil<OrderEntity> implements Cloneable{
 
     public OrderEntity() {
     }
@@ -155,6 +155,11 @@ public class OrderEntity extends ParcelableUtil<OrderEntity> {
     private String userChoiceCommpanyCode;
     private ArrayList<BillCommodity> goods;
     private List<OrderRecordBean> orderRecord;
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return (OrderEntity)super.clone();
+    }
 
     public String getId() {
         return id;
