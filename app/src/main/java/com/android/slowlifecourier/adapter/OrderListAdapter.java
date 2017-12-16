@@ -25,6 +25,7 @@ import butterknife.BindView;
 
 public class OrderListAdapter extends BaseAdapter<OrderEntity> {
 
+    private String string;
     public OrderListAdapter(Context context) {
         super(context, new ArrayList<OrderEntity>());
     }
