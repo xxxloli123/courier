@@ -206,7 +206,6 @@ public class SearchAddressActivity extends BaseActivity implements View.OnClickL
 
     }
 
-
     class PagerAdapter extends FragmentPagerAdapter {
         public PagerAdapter(FragmentManager fm) {
             super(fm);
@@ -237,7 +236,6 @@ public class SearchAddressActivity extends BaseActivity implements View.OnClickL
                 "全部", "写字楼", "小区", "学校"
         };
     }
-
 
     @SuppressLint("ValidFragment")
     public static class Frag extends ListFragment implements PoiSearch.OnPoiSearchListener {
@@ -322,7 +320,6 @@ public class SearchAddressActivity extends BaseActivity implements View.OnClickL
         }
 
     }
-
 
     static class Adapter extends Baseadapter<PoiItem> {
 
@@ -440,7 +437,6 @@ public class SearchAddressActivity extends BaseActivity implements View.OnClickL
         }
         win.showAsDropDown(search);
     }
-
 
     @Override
     protected void onResume() {

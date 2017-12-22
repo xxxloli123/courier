@@ -9,9 +9,12 @@ import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.amap.api.location.AMapLocation;
 import com.android.slowlifecourier.R;
 import com.android.slowlifecourier.adapter.OrderListAdapter;
 import com.android.slowlifecourier.app.MyApplication;
+import com.android.slowlifecourier.bluetoothprint.util.ToastUtil;
+import com.android.slowlifecourier.greendao.DBManagerOrder;
 import com.android.slowlifecourier.objectmodle.Info;
 import com.android.slowlifecourier.objectmodle.OrderEntity;
 import com.google.gson.Gson;
@@ -49,6 +52,8 @@ public class FragOrderList extends BaseFragment implements SwipeRefreshLayout.On
     protected OrderListAdapter adapter;
     protected String status;
     protected boolean enable;
+    private DBManagerOrder dbManagerOrder;
+    protected AMapLocation aMapLocation;
 
     public FragOrderList() {
     }
@@ -83,6 +88,7 @@ public class FragOrderList extends BaseFragment implements SwipeRefreshLayout.On
             noOrder.setVisibility(View.VISIBLE);
         }
         info = ((MyApplication) getContext().getApplicationContext()).getInfo();
+        aMapLocation=((MyApplication) getContext().getApplicationContext()).getLocation();
     }
 
     @Override
@@ -93,13 +99,27 @@ public class FragOrderList extends BaseFragment implements SwipeRefreshLayout.On
 
     @Override
     protected void initListener() {
-        listview.setOnScrollListener(new OnScrollListener());
+        if (status==null||!status.equals("UnPayed1"))listview.setOnScrollListener(new OnScrollListener());
         srl.setOnRefreshListener(this);
     }
 
     @Override
     protected void loadData() {
-        synchronized (info) {
+        if (status!=null&&status.equals("UnPayed1")){
+            dbManagerOrder=new DBManagerOrder(getActivity());
+            List<OrderEntity> orders = adapter.getData();
+            if (orders == null) {
+                orders=new ArrayList<>();
+                orders.addAll(dbManagerOrder.queryList());
+            }
+            firstLoad = false;
+            if (!orders.isEmpty()){
+                adapter.notifyDataSetChanged(orders);
+                noOrder.setVisibility(View.GONE);
+            }else noOrder.setVisibility(View.VISIBLE);
+            if (srl!=null)srl.setRefreshing(false);
+        }else
+            synchronized (info) {
             if (!firstLoad && srl != null && !srl.isRefreshing()) return;
             firstLoad = false;
             Map<String, Object> map = new HashMap<>();
@@ -119,9 +139,7 @@ public class FragOrderList extends BaseFragment implements SwipeRefreshLayout.On
     }
 
     @Override
-    public void onClick(View v) {
-
-    }
+    public void onClick(View v) {}
 
     @Override
     public void fail(Object tag, int code, JSONObject json) throws JSONException {
@@ -134,7 +152,6 @@ public class FragOrderList extends BaseFragment implements SwipeRefreshLayout.On
         switch (tag.toString()) {
             case Config.ROBORDER:
                 List<OrderEntity> orders = adapter.getData();
-
                 if (orders == null) orders = new ArrayList<>();
                 if (page == 1 && !orders.isEmpty()) orders.clear();
                 JSONArray arr = json.getJSONObject("ordersInfo").getJSONArray("aaData");
@@ -145,10 +162,11 @@ public class FragOrderList extends BaseFragment implements SwipeRefreshLayout.On
                     orders.add(orders.size(), gson.fromJson(cache.toString(), OrderEntity.class));
                 }
                 adapter.notifyDataSetChanged(orders);
-                if (noOrder!=null)
-                if (orders.isEmpty()) noOrder.setVisibility(View.VISIBLE);
-                else noOrder.setVisibility(View.GONE);
-                srl.setRefreshing(false);
+                if (noOrder!=null) {
+                    if (orders.isEmpty()) noOrder.setVisibility(View.VISIBLE);
+                    else noOrder.setVisibility(View.GONE);
+                }
+                if (srl!=null)srl.setRefreshing(false);
                 firstLoad = false;
                 break;
         }

@@ -4,17 +4,95 @@ import android.os.Parcel;
 
 import com.util.ParcelableUtil;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
+
 import java.util.ArrayList;
 import java.util.List;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by sgrape on 2017/5/25.
  * e-mail: sgrape1153@gmail.com
  */
-
+@Entity
 public class OrderEntity extends ParcelableUtil<OrderEntity> implements Cloneable{
 
     public OrderEntity() {
+    }
+
+    @Generated(hash = 1616651792)
+    public OrderEntity(Long writId, String id, String goodsName, String orderNumber, String createDate, String createUserId, String orderOfCompanyId, String createUserName, String createUserPhone, String type, String type_value, String status, String status_value, String payType, String payType_value, String payDate, String transactionNumber,
+            String comment, double userPayFee, double cost, double userActualFee, String payStatus, String payStatus_value, String urgent, double urgentFee, String insured, double insuredFee, float weight, String postmanId, String postmanName, String postmanPhone, String postmanCommpanyId, String postmanCommpanyName, String userChoiceCommpanyId,
+            String userChoiceCommpanyName, String logisticsNumber, String startPro, String startCity, String startDistrict, String startStreet, String startHouseNumber, double startLng, double startLat, String receiverId, String receiverName, String receiverPhone, String endPro, String endCity, String endDistrict, String endStreet,
+            String endHouseNumber, double endLng, double endLat, String shopId, String shopName, String arriveDate, String postmanDate, String shopSendDate, String postmanSendDate, String returnDate, String returnReason, String merchantReplay, String billoflading, String id2, String tradeImg, String userChoiceCommpanyCode) {
+        this.writId = writId;
+        this.id = id;
+        this.goodsName = goodsName;
+        this.orderNumber = orderNumber;
+        this.createDate = createDate;
+        this.createUserId = createUserId;
+        this.orderOfCompanyId = orderOfCompanyId;
+        this.createUserName = createUserName;
+        this.createUserPhone = createUserPhone;
+        this.type = type;
+        this.type_value = type_value;
+        this.status = status;
+        this.status_value = status_value;
+        this.payType = payType;
+        this.payType_value = payType_value;
+        this.payDate = payDate;
+        this.transactionNumber = transactionNumber;
+        this.comment = comment;
+        this.userPayFee = userPayFee;
+        this.cost = cost;
+        this.userActualFee = userActualFee;
+        this.payStatus = payStatus;
+        this.payStatus_value = payStatus_value;
+        this.urgent = urgent;
+        this.urgentFee = urgentFee;
+        this.insured = insured;
+        this.insuredFee = insuredFee;
+        this.weight = weight;
+        this.postmanId = postmanId;
+        this.postmanName = postmanName;
+        this.postmanPhone = postmanPhone;
+        this.postmanCommpanyId = postmanCommpanyId;
+        this.postmanCommpanyName = postmanCommpanyName;
+        this.userChoiceCommpanyId = userChoiceCommpanyId;
+        this.userChoiceCommpanyName = userChoiceCommpanyName;
+        this.logisticsNumber = logisticsNumber;
+        this.startPro = startPro;
+        this.startCity = startCity;
+        this.startDistrict = startDistrict;
+        this.startStreet = startStreet;
+        this.startHouseNumber = startHouseNumber;
+        this.startLng = startLng;
+        this.startLat = startLat;
+        this.receiverId = receiverId;
+        this.receiverName = receiverName;
+        this.receiverPhone = receiverPhone;
+        this.endPro = endPro;
+        this.endCity = endCity;
+        this.endDistrict = endDistrict;
+        this.endStreet = endStreet;
+        this.endHouseNumber = endHouseNumber;
+        this.endLng = endLng;
+        this.endLat = endLat;
+        this.shopId = shopId;
+        this.shopName = shopName;
+        this.arriveDate = arriveDate;
+        this.postmanDate = postmanDate;
+        this.shopSendDate = shopSendDate;
+        this.postmanSendDate = postmanSendDate;
+        this.returnDate = returnDate;
+        this.returnReason = returnReason;
+        this.merchantReplay = merchantReplay;
+        this.billoflading = billoflading;
+        this.id2 = id2;
+        this.tradeImg = tradeImg;
+        this.userChoiceCommpanyCode = userChoiceCommpanyCode;
     }
 
 
@@ -86,7 +164,8 @@ public class OrderEntity extends ParcelableUtil<OrderEntity> implements Cloneabl
      * billoflading : null
      * id2 : null
      */
-
+    @Id(autoincrement = true)
+    private Long writId;
     private String id;
     private String goodsName;
     private String orderNumber;
@@ -150,10 +229,13 @@ public class OrderEntity extends ParcelableUtil<OrderEntity> implements Cloneabl
     private String merchantReplay;
     private String billoflading;
     private String id2;
+    @Transient
     private List<String> evidenceImg;
     private String tradeImg;
     private String userChoiceCommpanyCode;
+    @Transient
     private ArrayList<BillCommodity> goods;
+    @Transient
     private List<OrderRecordBean> orderRecord;
 
     @Override
@@ -703,6 +785,14 @@ public class OrderEntity extends ParcelableUtil<OrderEntity> implements Cloneabl
 
     public void setGoodsName(String goodsName) {
         this.goodsName = goodsName;
+    }
+
+    public Long getWritId() {
+        return this.writId;
+    }
+
+    public void setWritId(Long writId) {
+        this.writId = writId;
     }
 
     public static class OrderRecordBean extends ParcelableUtil<OrderEntity> {

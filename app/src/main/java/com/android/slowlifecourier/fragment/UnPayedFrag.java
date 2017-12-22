@@ -12,6 +12,7 @@ import com.android.slowlifecourier.R;
 import com.android.slowlifecourier.activity.OrderDetailsActivity;
 import com.android.slowlifecourier.adapter.OrderListAdapter;
 import com.android.slowlifecourier.dialog.MessageDialog;
+import com.android.slowlifecourier.greendao.DBManagerOrder;
 import com.android.slowlifecourier.objectmodle.OrderEntity;
 import com.android.slowlifecourier.view.TimeButton;
 import com.interfaceconfig.Config;
@@ -35,10 +36,11 @@ public class UnPayedFrag extends FragOrderList {
 
     private long time = -1;
     private int deliveryCountdown = 60;
-
+    private String status="";
 
     public UnPayedFrag(String rob, String status) {
         super(rob, status);
+        this.status=status;
     }
 
     @Override
@@ -56,6 +58,7 @@ public class UnPayedFrag extends FragOrderList {
         protected void setData(View view, final OrderEntity order, int position) {
             super.setData(view, order, position);
             final ViewHolder holder = (ViewHolder) view.getTag();
+            final DBManagerOrder dbManagerOrder=new DBManagerOrder(getActivity());
             holder.grabSingle.setVisibility(View.GONE);
             if (TextUtils.equals(order.getPayType(), "Cash")) {
                 holder.grabSingle.setText("确认收款");
@@ -67,7 +70,6 @@ public class UnPayedFrag extends FragOrderList {
                         MessageDialog dialog = new MessageDialog(getContext());
                         dialog.show();
                         dialog.setListener(new MessageDialog.DialogButtonClickListener() {
-
                             @Override
                             public void done(Dialog dialog) {
                                 dialog.dismiss();
@@ -88,11 +90,14 @@ public class UnPayedFrag extends FragOrderList {
                 holder.alreadyDelivery.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("orderId", order.getId());
-                        newCall(Config.Url.getUrl(Config.ALREADYDELIVERY), params);
-                        Toast.makeText(getActivity(), "已提醒用户物件已送达\n如需再次提醒\n请一分钟后再操作", Toast.LENGTH_LONG).show();
-                        holder.alreadyDelivery.setClickable(false);
+
+                            Map<String, String> params = new HashMap<>();
+                            params.put("orderId", order.getId());
+                            params.put("address", aMapLocation.getAddress());
+                            newCall(Config.Url.getUrl(Config.ALREADYDELIVERY), params);
+                            Toast.makeText(getActivity(), "已提醒用户物件已送达\n如需再次提醒\n请一分钟后再操作", Toast.LENGTH_LONG).show();
+                            holder.alreadyDelivery.setClickable(false);
+                        if (status.equals("UnPayed1"))dbManagerOrder.deleteSpecialOrder(order);
                     }
                 });
             }
@@ -118,7 +123,6 @@ public class UnPayedFrag extends FragOrderList {
                                     params.put("cash", "cash");
                                     newCall(Config.Url.getUrl(Config.CONFIRMRECEIVABLES), params, order);
                                 }
-
                                 @Override
                                 public void cancel(Dialog dialog) {
                                     dialog.dismiss();
@@ -140,11 +144,14 @@ public class UnPayedFrag extends FragOrderList {
                 holder.alreadyDelivery.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("orderId", order.getId());
-                        newCall(Config.Url.getUrl(Config.ALREADYDELIVERY), params);
-                        Toast.makeText(getActivity(), "已提醒用户物件已送达\n如需再次提醒\n请一分钟后再操作", Toast.LENGTH_LONG).show();
-                        holder.alreadyDelivery.setClickable(false);
+
+                            Map<String, String> params = new HashMap<>();
+                            params.put("orderId", order.getId());
+                            newCall(Config.Url.getUrl(Config.ALREADYDELIVERY), params);
+                            Toast.makeText(getActivity(), "已提醒用户物件已送达\n如需再次提醒\n请一分钟后再操作", Toast.LENGTH_LONG).show();
+                            holder.alreadyDelivery.setClickable(false);
+                        if (status.equals("UnPayed1"))dbManagerOrder.deleteSpecialOrder(order);
+
                     }
                 });
             }
@@ -157,17 +164,27 @@ public class UnPayedFrag extends FragOrderList {
     }
 
     @Override
-    public void onSuccess(Object tag, JSONObject json) throws JSONException {
+    public void onSuccess(Object tag, JSONObject json1) throws JSONException {
 //        Toast.makeText(getActivity(), json.getString("message"), Toast.LENGTH_SHORT).show();
         switch (tag.toString()){
             case Config.ALREADYDELIVERY:
         }
-        super.onSuccess(tag, json);
+        super.onSuccess(tag, json1);
+        //instanceof判断是否是这个类
         if (tag != null && tag instanceof OrderEntity) {
             adapter.getData().remove(tag);
             adapter.notifyDataSetChanged();
         }
+        JSONObject json = new JSONObject();
+        try {
+            json.put("id", info.getId());
+            json.put("lat", aMapLocation.getLatitude());
+            json.put("lng", aMapLocation.getLongitude());
+            Map<String, Object> params = new HashMap<>();
+            params.put("userStr", json);
+            newCall(Config.Url.getUrl("slowlife/appuser/userupdatelatlng"), params);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
-
-
 }

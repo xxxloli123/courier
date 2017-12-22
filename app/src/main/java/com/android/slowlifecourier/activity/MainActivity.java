@@ -1,6 +1,10 @@
 package com.android.slowlifecourier.activity;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -8,14 +12,25 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.android.slowlifecourier.R;
 import com.android.slowlifecourier.fragment.DistributionFragment;
 import com.android.slowlifecourier.fragment.PersonalCenterFragment;
+import com.android.slowlifecourier.util.InstallUtils;
+import com.interfaceconfig.Config;
 import com.sgrape.BaseActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MainActivity extends BaseActivity {
     private Button selectButton;
@@ -42,12 +57,93 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init(savedInstanceState);
-        Log.e("true||false", String.valueOf(true&&false));
+        update(getVersionCode(this));
     }
 
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
+    }
+
+    public static int getVersionCode(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public  void update(final int versionCode) {
+        Request req = new Request.Builder()
+                .tag("")
+                .url(Config.Url.getUrl(Config.UPDATE)).build();
+        new OkHttpClient().newCall(req).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    JSONObject json = new JSONObject(response.body().string());
+                    int ver = json.getJSONObject("appVersion").getInt("version");
+                    if (ver > versionCode) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                upData2();
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+    }
+    private static Handler handler = new Handler();
+
+    public void upData2(){
+        Toast.makeText(this, "检测到新的版本，自动为您下载。。。", Toast.LENGTH_SHORT).show();
+        new InstallUtils(this, Config.Url.getUrl("/slowlife/share/appdownload?type=android"), "惠递",
+                new InstallUtils.DownloadCallBack() {
+                    @Override
+                    public void onStart() {
+                    }
+
+                    @Override
+                    public void onComplete(String path) {
+                        if (distribution!=null)distribution.setText("订单处理");
+                        InstallUtils.installAPK(MainActivity.this, path, getPackageName() + ".provider", new InstallUtils.InstallCallBack() {
+                            @Override
+                            public void onSuccess() {
+
+                                Toast.makeText(MainActivity.this, "正在安装程序", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFail(Exception e) {
+                                Toast.makeText(MainActivity.this, "安装失败:" + e.toString(), Toast.LENGTH_SHORT).show();
+                                Log.e("onFail","安装失败:" + e.toString());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onLoading(long total, long current) {
+                        if (distribution!=null)distribution.setText((int) (current * 100 / total)+"%");
+                    }
+
+                    @Override
+                    public void onFail(Exception e) {
+                        Toast.makeText(MainActivity.this, "下载失败:" + e.toString(), Toast.LENGTH_SHORT).show();
+                        Log.e("onFail","下载失败:" + e.toString());
+                    }
+
+                }).downloadAPK();
     }
 
     /*

@@ -149,7 +149,6 @@ public class LbsService extends Service implements
         }
     }
 
-
     /**
      * 停止定位
      */

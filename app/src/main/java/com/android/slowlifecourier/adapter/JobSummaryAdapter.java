@@ -35,12 +35,10 @@ public class JobSummaryAdapter extends FragmentPagerAdapter {
             case 1:
                 allOrderFragment = new CompleteFrag();
                 return allOrderFragment;
+
             case 2:
-                allOrderFragment = new ServedFragment(null, "GoodsDelivery");
+                allOrderFragment = new UnPayedFrag(null, "UnPayed");
                 return allOrderFragment;
-//            case 2:
-//                allOrderFragment = new UnPayedFrag(null, "UnPayed");
-//                return allOrderFragment;
 //            case 2:
 //                allOrderFragment = new FragOrderList(null, "CancelOrder", "CityWide,Intercity", false);
 //                return allOrderFragment;

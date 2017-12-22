@@ -94,8 +94,6 @@ public class PickUpFragment extends FragOrderList implements AdapterView.OnItemC
 
     }
 
-
-
     class Adapter extends OrderListAdapter {
 
         public Adapter() {

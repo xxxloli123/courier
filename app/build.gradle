@@ -5,7 +5,7 @@ android {
         sign {
             keyAlias 'shaduc'
             keyPassword 'shaduc'
-            storeFile file('E:/android/pro/slowlifecourier/courier.jks')
+            storeFile file('D:/android/pro/slowlifecourier/courier.jks')
             storePassword 'shaduc'
         }
     }
@@ -40,6 +40,14 @@ android {
     sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res-dialog'] } }
 }
 
+apply plugin: 'org.greenrobot.greendao'
+//数据库版本以及Dao的相关设置
+greendao {
+    schemaVersion 2 //数据库schema版本
+    daoPackage 'com.android.slowlifecourier.greendao.gen'
+    targetGenDir 'src/main/java'
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':library')
@@ -56,4 +64,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'de.greenrobot:eventbus:2.2.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'org.greenrobot:greendao:3.2.2'
 }

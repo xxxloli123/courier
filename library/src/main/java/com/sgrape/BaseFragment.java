@@ -63,11 +63,11 @@ public abstract class BaseFragment extends Fragment implements Impl, View.OnClic
         unbinder = ButterKnife.bind(this, rootView);
         callback = new OkHttpCallback(this);
         init();
-        initListener();
         if (getUserVisibleHint() && firstLoad) {
             loadData();
         }
         if (httpClient == null) httpClient = new OkHttpClient();
+        initListener();
         return rootView;
     }
 

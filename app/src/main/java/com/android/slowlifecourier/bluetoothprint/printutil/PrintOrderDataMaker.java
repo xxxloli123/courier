@@ -77,6 +77,8 @@ public class PrintOrderDataMaker implements PrintDataMaker {
 
 
             printer.setAlignCenter();//设置居中
+            printer.print("公司: " + orderEntity.getUserChoiceCommpanyName());
+            printer.printLineFeed();
             printer.print("姓名: " + orderEntity.getReceiverName());
             printer.printLineFeed();
             printer.print("电话: " +orderEntity.getReceiverPhone());

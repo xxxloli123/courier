@@ -58,6 +58,8 @@ import com.android.slowlifecourier.bluetoothprint.printutil.PrinterWriter;
 import com.android.slowlifecourier.bluetoothprint.printutil.PrinterWriter58mm;
 import com.android.slowlifecourier.bluetoothprint.util.ToastUtil;
 import com.android.slowlifecourier.dialog.MessageDialog;
+import com.android.slowlifecourier.greendao.DBManagerOrder;
+import com.android.slowlifecourier.greendao.SpecialOrder;
 import com.android.slowlifecourier.objectmodle.City;
 import com.android.slowlifecourier.objectmodle.Info;
 import com.android.slowlifecourier.objectmodle.OrderEntity;
@@ -146,12 +148,14 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
     private String urgentCost;
     BluetoothAdapter mAdapter;
     private boolean isHave;
+    private DBManagerOrder dbManagerOrder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mapView.onCreate(savedInstanceState);
         mAdapter = BluetoothAdapter.getDefaultAdapter();
+        dbManagerOrder=new DBManagerOrder(this);
         initMap();
         if (savedInstanceState != null) {
             position = savedInstanceState.getInt("position", -1);
@@ -313,6 +317,7 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
     }
 
     private void submit() {
+
         final Info info = ((MyApplication) getApplication()).getInfo();
         final JSONArray arr = new JSONArray();
         final MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
@@ -347,7 +352,7 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
                     scrollView.smoothScrollTo(0, (order.getTop()));
                     return;
                 }
-
+                printOrder.setUserChoiceCommpanyName(this.order.getUserChoiceCommpanyName());
                 printOrder(printOrder);
                 if (!isEmpty(path)){
                     final File file = new File(path);
@@ -380,12 +385,13 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
                 }
             }
         }
-
+        final AMapLocation aMapLocation=((MyApplication) getContext().getApplicationContext()).getLocation();
         System.out.println(arr.toString());
         final Map<String, Object> params = new HashMap<>();
         params.put("userId", info.getId());
         params.put("orderStr", arr);
         params.put("type", order.getType());
+        params.put("address",aMapLocation .getAddress());
         MessageDialog dialog = new MessageDialog(getContext());
         dialog.show();
         dialog.setMessage("确定取货吗?");
@@ -414,6 +420,7 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
 //            });
                     url = Config.Url.getUrl(Config.ORDERTOTALINTERCITY);
                     requestBodyBuilder.addFormDataPart("userId", info.getId())
+                            .addFormDataPart("address",aMapLocation .getAddress())
                             .addFormDataPart("orderStr", arr.toString());
                     Request.Builder builder = new Request.Builder().url(url).method("POST", requestBodyBuilder.build())
                             .tag(url.substring(Config.HOST.length(), url.length()));
@@ -466,10 +473,13 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
                 break;
             case Config.ORDERTOTALINTERCITY:
             case Config.ORDERTOTALCITYWIDE:
+                order.setStatus("UnPayed");
+                dbManagerOrder.insertSpecialOrder(order);
                 Toast.makeText(this, json.getString("message"), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.putExtra("position", position);
                 setResult(Activity.RESULT_OK, intent);
+
                 finish();
                 break;
             case Config.AREAINFO:

@@ -7,6 +7,7 @@
     android:background="@color/line_color"
     android:id="@+id/ll"
     android:fitsSystemWindows="true">
+
     <RelativeLayout
         android:id="@+id/top_layout"
         android:layout_width="match_parent"

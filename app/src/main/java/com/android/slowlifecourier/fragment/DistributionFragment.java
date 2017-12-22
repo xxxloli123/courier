@@ -66,7 +66,7 @@ public class DistributionFragment extends BaseFragment {
         ArrayList<String> list = new ArrayList<>();
         list.add("待抢单");
         list.add("待取货");
-//        list.add("待付款");
+        list.add("待付款");
         list.add("待送达");
 
         pager.setAdapter(new OrdersAdapter(getActivity().getSupportFragmentManager(), list));

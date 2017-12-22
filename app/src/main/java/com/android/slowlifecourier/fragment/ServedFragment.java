@@ -64,10 +64,21 @@ public class ServedFragment extends FragOrderList {
     }
 
     @Override
-    public void onSuccess(Object tag, JSONObject json) throws JSONException {
-        super.onSuccess(tag, json);
-        Toast.makeText(getContext(), json.getString("message"), Toast.LENGTH_SHORT).show();
+    public void onSuccess(Object tag, JSONObject json1) throws JSONException {
+        super.onSuccess(tag, json1);
+//        Toast.makeText(getContext(), json1.getString("message"), Toast.LENGTH_SHORT).show();
         adapter.getData().remove(tag);
         adapter.notifyDataSetChanged();
+        JSONObject json = new JSONObject();
+        try {
+            json.put("id", info.getId());
+            json.put("lat", aMapLocation.getLatitude());
+            json.put("lng", aMapLocation.getLongitude());
+            Map<String, Object> params = new HashMap<>();
+            params.put("userStr", json);
+            newCall(Config.Url.getUrl("slowlife/appuser/userupdatelatlng"), params);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
