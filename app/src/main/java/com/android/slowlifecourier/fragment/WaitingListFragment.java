@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.slowlifecourier.adapter.OrderListAdapter;
+import com.android.slowlifecourier.app.MyApplication;
 import com.android.slowlifecourier.objectmodle.OrderEntity;
 import com.interfaceconfig.Config;
 
@@ -35,14 +36,12 @@ public class WaitingListFragment extends FragOrderList implements SwipeRefreshLa
         super(rob, status);
     }
 
-
     private void submit(OrderEntity orderEntity) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("orderId", orderEntity.getId());
-        map.put("userId", info.getId());
-        map.put("address", aMapLocation.getAddress());
-        newCall(Config.Url.getUrl(Config.BATTLE), map, orderEntity);
-
+            Map<String, Object> map = new HashMap<>();
+            map.put("orderId", orderEntity.getId());
+            map.put("userId", info.getId());
+        if (aMapLocation!=null) map.put("address", aMapLocation.getAddress());
+            newCall(Config.Url.getUrl(Config.BATTLE), map, orderEntity);
     }
 
     class Adapter extends OrderListAdapter {
@@ -98,7 +97,7 @@ public class WaitingListFragment extends FragOrderList implements SwipeRefreshLa
                 noOrder.setVisibility(View.VISIBLE);
             }
             JSONObject json = new JSONObject();
-            try {
+            if (aMapLocation!=null)try {
                 json.put("id", info.getId());
                 json.put("lat", aMapLocation.getLatitude());
                 json.put("lng", aMapLocation.getLongitude());

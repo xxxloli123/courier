@@ -51,6 +51,7 @@ import com.android.slowlifecourier.adressselectorlib.AddressSelector;
 import com.android.slowlifecourier.adressselectorlib.CityInterface;
 import com.android.slowlifecourier.adressselectorlib.OnItemClickListener;
 import com.android.slowlifecourier.app.MyApplication;
+import com.android.slowlifecourier.bluetoothprint.SearchBluetoothActivity;
 import com.android.slowlifecourier.bluetoothprint.base.AppInfo;
 import com.android.slowlifecourier.bluetoothprint.print.PrintQueue;
 import com.android.slowlifecourier.bluetoothprint.printutil.PrintOrderDataMaker;
@@ -149,11 +150,15 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
     BluetoothAdapter mAdapter;
     private boolean isHave;
     private DBManagerOrder dbManagerOrder;
+    private List<OrderEntity> orderEntities=new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mapView.onCreate(savedInstanceState);
+        if (TextUtils.isEmpty(AppInfo.btAddress)){
+            startActivity(new Intent(this, SearchBluetoothActivity.class));
+        }
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         dbManagerOrder=new DBManagerOrder(this);
         initMap();
@@ -317,7 +322,6 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
     }
 
     private void submit() {
-
         final Info info = ((MyApplication) getApplication()).getInfo();
         final JSONArray arr = new JSONArray();
         final MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
@@ -331,6 +335,7 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
         for (int i=0;i<viewList.size();i++){
             Order order=viewList.get(i);
             try {
+                if (i==0)orderEntities.clear();
                 final JSONObject data = order.getData();
                 if (data == null) {
                     scrollView.scrollTo(0, order.getTop());
@@ -341,8 +346,15 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
                 }
                 arr.put(data);
                 PrintOrder printOrder=new Gson().fromJson(data.toString(),PrintOrder.class);
+                this.order.setStatus("UnPayed");
+                this.order.setEndPro(printOrder.getEndPro());
+                this.order.setEndCity(printOrder.getEndCity());
+                this.order.setEndDistrict(printOrder.getEndDistrict());
+                this.order.setEndHouseNumber(printOrder.getEndHouseNumber());
+                orderEntities.add(this.order);
                 if (TextUtils.equals(this.order.getType(), "CityWide")) {
                     printOrder(printOrder);
+//                    continue 继续 继续循环下去
                     continue;
                 }
                 final String path = order.getImgPath();
@@ -354,6 +366,8 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
                 }
                 printOrder.setUserChoiceCommpanyName(this.order.getUserChoiceCommpanyName());
                 printOrder(printOrder);
+
+                ToastUtil.showToast(OrderDetailsActivity.this,orderEntities.size()+"");
                 if (!isEmpty(path)){
                     final File file = new File(path);
                     fis = new FileInputStream(file);
@@ -385,6 +399,7 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
                 }
             }
         }
+
         final AMapLocation aMapLocation=((MyApplication) getContext().getApplicationContext()).getLocation();
         System.out.println(arr.toString());
         final Map<String, Object> params = new HashMap<>();
@@ -473,13 +488,11 @@ public class OrderDetailsActivity extends BaseActivity implements LocationSource
                 break;
             case Config.ORDERTOTALINTERCITY:
             case Config.ORDERTOTALCITYWIDE:
-                order.setStatus("UnPayed");
-                dbManagerOrder.insertSpecialOrder(order);
+//                dbManagerOrder.insertOrderList(orderEntities);
                 Toast.makeText(this, json.getString("message"), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.putExtra("position", position);
                 setResult(Activity.RESULT_OK, intent);
-
                 finish();
                 break;
             case Config.AREAINFO:

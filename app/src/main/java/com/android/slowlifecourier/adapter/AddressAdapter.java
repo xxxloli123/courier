@@ -5,10 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.android.slowlifecourier.R;
+import com.android.slowlifecourier.view.MyRadioButton;
 
 import java.util.List;
 
@@ -31,6 +30,13 @@ public class AddressAdapter extends BaseAdapter {
         inflater = LayoutInflater.from(context);
     }
 
+    public void changeSelected(int positon) { //刷新方法
+        if (positon != mSelect) {
+            mSelect = positon;
+            notifyDataSetChanged();
+        }
+    }
+
     @Override
     public int getCount() {
         return list == null || list.isEmpty() ? 0 : list.size();
@@ -48,30 +54,27 @@ public class AddressAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        AddressAdapter.ViewHolder holder=null;
+        ViewHolder holder = null;
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.item_dizhi, null);
-            holder=new AddressAdapter.ViewHolder(convertView);
+            convertView = inflater.inflate(R.layout.item_select_province, null);
+            holder = new ViewHolder(convertView);
             convertView.setTag(holder);
-        }else{
-            holder= (AddressAdapter.ViewHolder) convertView.getTag();
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
-        holder.text_cq.setText(list.get(position)+"");
-        holder.linear_dz.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        holder.radio.setText(list.get(position) + "");
+        if (mSelect == position) {
+            holder.radio.setChecked(true);
+        } else {
+            holder.radio.setChecked(false);
+        }
         return convertView;
     }
 
-    static class ViewHolder {
 
-        @BindView(R.id.text_cq)
-        TextView text_cq;
-        @BindView(R.id.linear_dz)
-        LinearLayout linear_dz;
+    static class ViewHolder {
+        @BindView(R.id.radio)
+        MyRadioButton radio;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

@@ -45,6 +45,21 @@ public class DBManagerOrder {
         }
         return mInstance;
     }
+
+    /**
+     * 插入用户集合
+     *
+     * @param
+     */
+    public void insertOrderList(List<OrderEntity> accounts) {
+        if (accounts == null || accounts.isEmpty()) {
+            return;
+        }
+        DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
+        DaoSession daoSession = daoMaster.newSession();
+        OrderEntityDao shopDao = daoSession.getOrderEntityDao();
+        shopDao.insertInTx(accounts);
+    }
     /**
      * 获取可读数据库
      */

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -58,7 +59,6 @@ public class UnPayedFrag extends FragOrderList {
         protected void setData(View view, final OrderEntity order, int position) {
             super.setData(view, order, position);
             final ViewHolder holder = (ViewHolder) view.getTag();
-            final DBManagerOrder dbManagerOrder=new DBManagerOrder(getActivity());
             holder.grabSingle.setVisibility(View.GONE);
             if (TextUtils.equals(order.getPayType(), "Cash")) {
                 holder.grabSingle.setText("确认收款");
@@ -90,14 +90,15 @@ public class UnPayedFrag extends FragOrderList {
                 holder.alreadyDelivery.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
                             Map<String, String> params = new HashMap<>();
                             params.put("orderId", order.getId());
                             params.put("address", aMapLocation.getAddress());
                             newCall(Config.Url.getUrl(Config.ALREADYDELIVERY), params);
                             Toast.makeText(getActivity(), "已提醒用户物件已送达\n如需再次提醒\n请一分钟后再操作", Toast.LENGTH_LONG).show();
-                            holder.alreadyDelivery.setClickable(false);
-                        if (status.equals("UnPayed1"))dbManagerOrder.deleteSpecialOrder(order);
+                        if (status.equals("UnPayed1")){
+                            adapter.getData().remove(order);
+                            adapter.notifyDataSetChanged();
+                        }
                     }
                 });
             }
@@ -144,14 +145,14 @@ public class UnPayedFrag extends FragOrderList {
                 holder.alreadyDelivery.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
                             Map<String, String> params = new HashMap<>();
                             params.put("orderId", order.getId());
                             newCall(Config.Url.getUrl(Config.ALREADYDELIVERY), params);
                             Toast.makeText(getActivity(), "已提醒用户物件已送达\n如需再次提醒\n请一分钟后再操作", Toast.LENGTH_LONG).show();
-                            holder.alreadyDelivery.setClickable(false);
-                        if (status.equals("UnPayed1"))dbManagerOrder.deleteSpecialOrder(order);
-
+                        if (status.equals("UnPayed1")){
+                            adapter.getData().remove(order);
+                            adapter.notifyDataSetChanged();
+                        }
                     }
                 });
             }
@@ -166,25 +167,27 @@ public class UnPayedFrag extends FragOrderList {
     @Override
     public void onSuccess(Object tag, JSONObject json1) throws JSONException {
 //        Toast.makeText(getActivity(), json.getString("message"), Toast.LENGTH_SHORT).show();
-        switch (tag.toString()){
-            case Config.ALREADYDELIVERY:
-        }
+        Log.e("ALREADYDELIVERY",""+json1);
+
         super.onSuccess(tag, json1);
+        if (tag==null)return;
         //instanceof判断是否是这个类
-        if (tag != null && tag instanceof OrderEntity) {
+        if ( tag instanceof OrderEntity) {
             adapter.getData().remove(tag);
             adapter.notifyDataSetChanged();
         }
-        JSONObject json = new JSONObject();
-        try {
-            json.put("id", info.getId());
-            json.put("lat", aMapLocation.getLatitude());
-            json.put("lng", aMapLocation.getLongitude());
-            Map<String, Object> params = new HashMap<>();
-            params.put("userStr", json);
-            newCall(Config.Url.getUrl("slowlife/appuser/userupdatelatlng"), params);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (tag.equals(Config.ALREADYDELIVERY)){
+            JSONObject json = new JSONObject();
+            try {
+                json.put("id", info.getId());
+                json.put("lat", aMapLocation.getLatitude());
+                json.put("lng", aMapLocation.getLongitude());
+                Map<String, Object> params = new HashMap<>();
+                params.put("userStr", json);
+                newCall(Config.Url.getUrl("slowlife/appuser/userupdatelatlng"), params);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

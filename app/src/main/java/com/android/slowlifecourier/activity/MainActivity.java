@@ -57,7 +57,7 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init(savedInstanceState);
-        update(getVersionCode(this));
+//        update(getVersionCode(this));
     }
 
     @Override
@@ -101,9 +101,9 @@ public class MainActivity extends BaseActivity {
                     e.printStackTrace();
                 }
             }
-
         });
     }
+
     private static Handler handler = new Handler();
 
     public void upData2(){

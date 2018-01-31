@@ -97,12 +97,8 @@ public class IdentityAuthenticationActivity extends BaseActivity {
      * 初始化页面
      */
     protected void init() {
-        file1 = new File(Environment.getExternalStorageDirectory().getPath()+"/2333"
-                , UUID.randomUUID().toString() + ".png");
-
-        file2 = new File(Environment.getExternalStorageDirectory().getPath()+"/2333"
-                , UUID.randomUUID().toString() + ".png");
-//                new File(getExternalCacheDir(), UUID.randomUUID().toString() + ".png");
+        file1 = new File(getExternalCacheDir(), UUID.randomUUID().toString() + ".png");
+        file2 = new File(getExternalCacheDir(), UUID.randomUUID().toString() + ".png");
         AuthenticationInformationEntity entity = new AuthenticationInformationEntity();
         if ("1".equals(entity.getIdentityTag())) {
             scrollView.setVisibility(View.GONE);
@@ -287,6 +283,7 @@ public class IdentityAuthenticationActivity extends BaseActivity {
         pop.showAtLocation(view, Gravity.BOTTOM, 0, 0);
     }
 
+
     /**
      * 拍照上传
      */
@@ -301,16 +298,17 @@ public class IdentityAuthenticationActivity extends BaseActivity {
                         Toast.makeText(this, "图片文件读取出错", Toast.LENGTH_LONG).show();
                         return;
                     }
-//                    try {
-//                        Bitmap img = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-//                        img.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(tag ? file1 : file2));
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
+                    try {
+                        Bitmap img = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                        img.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(tag ? file1 : file2));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 case 1:
                     File file = tag ? file1 : file2;
                     if (!file.exists()) {
-                        Toast.makeText(this, "图片文件读取出错", Toast.LENGTH_LONG).show();
+                        //可能文件路径有问题？
+                        Toast.makeText(this, "图片文件读取出错2", Toast.LENGTH_LONG).show();
                         return;
                     }
 //                    if (file.length() > 2 * 1024 * 1024) {
@@ -342,6 +340,5 @@ public class IdentityAuthenticationActivity extends BaseActivity {
 
     @Override
     public void onSuccess(Object tag, JSONObject json) throws JSONException {
-
     }
 }

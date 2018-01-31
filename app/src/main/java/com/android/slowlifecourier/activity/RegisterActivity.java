@@ -201,7 +201,6 @@ public class RegisterActivity extends BaseActivity implements
         }
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();

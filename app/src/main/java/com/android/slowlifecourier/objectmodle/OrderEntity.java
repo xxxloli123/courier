@@ -166,6 +166,7 @@ public class OrderEntity extends ParcelableUtil<OrderEntity> implements Cloneabl
      */
     @Id(autoincrement = true)
     private Long writId;
+
     private String id;
     private String goodsName;
     private String orderNumber;
@@ -792,7 +793,7 @@ public class OrderEntity extends ParcelableUtil<OrderEntity> implements Cloneabl
     }
 
     public void setWritId(Long writId) {
-        this.writId = writId;
+        this.writId = null;
     }
 
     public static class OrderRecordBean extends ParcelableUtil<OrderEntity> {

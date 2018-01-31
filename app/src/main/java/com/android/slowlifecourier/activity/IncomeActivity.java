@@ -135,10 +135,10 @@ public class IncomeActivity extends BaseActivity implements SwipeRefreshLayout.O
     @Override
     public void onSuccess(Object tag, JSONObject json) throws JSONException {
         if (tag.equals(Config.Get_Statistics)){
-            todayAreaTv.setText("今日同城："+json.getString("todayCityWide"));
-            todayOutAreaTv.setText("今日区外："+json.getString("todayIntercity"));
-            thisMonthAreaTv.setText("本月同城:"+json.getString("monthCityWide"));
-            thisMonthOutAreaTv.setText("本月区外:"+json.getString("monthIntercity"));
+            if (todayAreaTv!=null)todayAreaTv.setText("今日同城："+json.getString("todayCityWide"));
+            if (todayOutAreaTv!=null)todayOutAreaTv.setText("今日区外："+json.getString("todayIntercity"));
+            if (thisMonthAreaTv!=null)thisMonthAreaTv.setText("本月同城:"+json.getString("monthCityWide"));
+            if (thisMonthOutAreaTv!=null)thisMonthOutAreaTv.setText("本月区外:"+json.getString("monthIntercity"));
         }else {
             loadding = false;
             if (srl != null && srl.isRefreshing()) srl.setRefreshing(false);
@@ -148,7 +148,6 @@ public class IncomeActivity extends BaseActivity implements SwipeRefreshLayout.O
             if (page == 1) adapter.notifyDataSetChanged(arr);
             else adapter.addData(arr);
         }
-
     }
 
     @Override
@@ -163,7 +162,6 @@ public class IncomeActivity extends BaseActivity implements SwipeRefreshLayout.O
         page = 0;
         loadData();
     }
-
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {

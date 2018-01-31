@@ -68,6 +68,7 @@ public class DistributionFragment extends BaseFragment {
         list.add("待取货");
         list.add("待付款");
         list.add("待送达");
+        list.add("换单");
 
         pager.setAdapter(new OrdersAdapter(getActivity().getSupportFragmentManager(), list));
         tabs.setViewPager(pager);

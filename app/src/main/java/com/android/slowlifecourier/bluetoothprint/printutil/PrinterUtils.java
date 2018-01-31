@@ -652,7 +652,7 @@ public class PrinterUtils {
                 realSize = 0;
                 break;
             case 1:
-                realSize = 17;
+                realSize = 13;
                 break;
             case 2:
                 realSize = 34;

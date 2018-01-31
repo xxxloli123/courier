@@ -5,8 +5,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
+import com.android.slowlifecourier.fragment.ExchangeOrderFragment;
 import com.android.slowlifecourier.fragment.PickUpFragment;
-import com.android.slowlifecourier.fragment.ServedFragment;
+import com.android.slowlifecourier.fragment.ServedFragment1;
 import com.android.slowlifecourier.fragment.UnPayedFrag;
 import com.android.slowlifecourier.fragment.WaitingListFragment;
 
@@ -18,7 +19,8 @@ import java.util.ArrayList;
 
 public class OrdersAdapter extends FragmentPagerAdapter {
     private ArrayList<String> list;
-    private Fragment waitingListFragment, pickUpFragment, unpayedFrag, servedFragment;
+
+    private Fragment waitingListFragment, pickUpFragment, unpayedFrag, servedFragment,exchangeOrderFragment;
 
     public OrdersAdapter(FragmentManager fm, ArrayList<String> list) {
         super(fm);
@@ -42,9 +44,12 @@ public class OrdersAdapter extends FragmentPagerAdapter {
                 return unpayedFrag;
             case 3:
                 if (servedFragment == null)
-                    servedFragment = new ServedFragment(null, "GoodsDelivery");
+                    servedFragment = new ServedFragment1(null, "GoodsDelivery");
                 return servedFragment;
-
+            case 4:
+                if (exchangeOrderFragment == null)
+                    exchangeOrderFragment = new ExchangeOrderFragment(null, "ExchangeOrderFragment");
+                return exchangeOrderFragment;
             default:
                 return null;
         }

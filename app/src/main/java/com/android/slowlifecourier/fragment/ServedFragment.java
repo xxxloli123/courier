@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.slowlifecourier.adapter.OrderListAdapter;
+import com.android.slowlifecourier.bluetoothprint.util.ToastUtil;
 import com.android.slowlifecourier.objectmodle.OrderEntity;
 import com.interfaceconfig.Config;
 
@@ -28,13 +29,13 @@ public class ServedFragment extends FragOrderList {
         super(rob, status);
     }
 
-
     private void submit(OrderEntity orderEntity) {
 //        orderId:订单id;status=Complete
+        ToastUtil.showToast(getActivity(),"什么鬼");
         Map<String, String> map = new HashMap<>();
         map.put("orderId", orderEntity.getId());
         map.put("status", "Complete");
-        newCall(Config.Url.getUrl(Config.ORDERCOMPLETE), map, orderEntity);
+//        newCall(Config.Url.getUrl(Config.ORDERCOMPLETE), map, orderEntity);
     }
 
     @Override
@@ -48,13 +49,26 @@ public class ServedFragment extends FragOrderList {
         public Adapter() {
             super(getContext());
         }
-
         @Override
         protected void setData(View view, final OrderEntity order, final int position) {
             super.setData(view, order, position);
             ViewHolder holder = (ViewHolder) view.getTag();
+            holder.SpareRire.setVisibility(View.GONE);
             holder.grabSingle.setText("确认送达");
             holder.grabSingle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    submit(order);
+                }
+            });
+            holder.spareTireBt.setVisibility(View.VISIBLE);
+            holder.orderTime.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    submit(order);
+                }
+            });
+            holder.spareTireBt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     submit(order);

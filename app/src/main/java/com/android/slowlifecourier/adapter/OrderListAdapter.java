@@ -3,6 +3,7 @@ package com.android.slowlifecourier.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -266,6 +267,10 @@ public class OrderListAdapter extends BaseAdapter<OrderEntity> {
     }
 
     public static class ViewHolder extends VH {
+        @BindView(R.id.fjaoeijfaoiejf)
+        public LinearLayout SpareRire;
+        @BindView(R.id.spare_tire_bt)
+        public Button spareTireBt;
         @BindView(R.id.price)
         public TextView price;
         @BindView(R.id.layout)
@@ -281,7 +286,7 @@ public class OrderListAdapter extends BaseAdapter<OrderEntity> {
         @BindView(R.id.urgent_order)
         public TextView urgentOrder;
         @BindView(R.id.grab_single)
-        public TextView grabSingle;
+        public Button grabSingle;
         @BindView(R.id.logo)
         ImageView logo;
         @BindView(R.id.localtion)

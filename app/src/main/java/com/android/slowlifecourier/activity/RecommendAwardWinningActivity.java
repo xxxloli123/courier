@@ -221,7 +221,6 @@ public class RecommendAwardWinningActivity extends BaseActivity implements View.
         share.share();
     }
 
-
     private void showZxImg() {
         try {
             Info info = ((MyApplication) getApplication()).getInfo();

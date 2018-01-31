@@ -1,7 +1,7 @@
 package com.interfaceconfig;
 
 public interface Config {
-    String LOCAL_HOST = "http://192.168.0.105:8080/";
+    String LOCAL_HOST = "http://192.168.0.101:8080/";
     String HOST = "http://www.zsh7.com/";
     // 登录
     String LOGIN = "slowlife/appuser/userlogin";
@@ -34,6 +34,7 @@ public interface Config {
      *
      */
     String Order_Img = "slowlife/img/order/";
+
     /**
      * image
      */
@@ -43,7 +44,6 @@ public interface Config {
      * 订单详情
      */
     String ORDER_DETAILS = "slowlife/appuserorder/queryorderid";
-
 
     /**
      * 绑定
@@ -239,6 +239,27 @@ public interface Config {
      描述：快递员订单统计
      */
     String Get_Statistics = "slowlife/appuserorder/courierordercount";
+
+    /**
+     描述：获取所有正常使用快递员
+     */
+    String GET_Courier= "slowlife/appuserorder/allcourier";;
+
+    /**
+     描述：接单快递员提交换单请求;
+     */
+    String RequestExchangeOrder= "slowlife/appuserorder/toexchangeorder";;;
+
+    /**
+     描述：获取等待接受交换订单;
+     */
+    String GetExchangeOrder= "slowlife/appuserorder/getexchangeorder";;;
+
+    /**
+     描述：获取等待接受交换订单;
+     */
+    String HandleExchangeOrder= "slowlife/appuserorder/acceptorreject";;;
+
 
     static class Url {
         public static String getUrl(String url) {

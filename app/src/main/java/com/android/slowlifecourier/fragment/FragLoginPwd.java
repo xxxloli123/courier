@@ -69,7 +69,11 @@ public class FragLoginPwd extends BaseFragment {
                 break;
         }
     }
-
+//
+//    @Override
+//    protected void init() {
+//        phoneEdit.setText(((MyApplication) getContext().getApplicationContext()).getToken());
+//    }
 
     private void login() {
         String phone = phoneEdit.getText().toString().trim();

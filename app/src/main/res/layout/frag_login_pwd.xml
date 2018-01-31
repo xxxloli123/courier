@@ -17,7 +17,6 @@
         android:gravity="center_vertical"
         android:hint="手机号"
         android:inputType="phone"
-        android:maxLength="11"
         android:maxLines="1"
         android:textColor="@color/black"
         android:textColorHint="#919191"

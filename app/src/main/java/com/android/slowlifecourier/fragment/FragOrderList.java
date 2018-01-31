@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,7 @@ public class FragOrderList extends BaseFragment implements SwipeRefreshLayout.On
     protected boolean enable;
     private DBManagerOrder dbManagerOrder;
     protected AMapLocation aMapLocation;
+    private boolean isExchange=false;
 
     public FragOrderList() {
     }
@@ -80,6 +82,7 @@ public class FragOrderList extends BaseFragment implements SwipeRefreshLayout.On
 
     @Override
     protected void init() {
+        aMapLocation=((MyApplication) getContext().getApplicationContext()).getLocation();
         if (listview.getAdapter() == null)
             listview.setAdapter(adapter);
         if (listview.getCount() > 0) {
@@ -88,7 +91,6 @@ public class FragOrderList extends BaseFragment implements SwipeRefreshLayout.On
             noOrder.setVisibility(View.VISIBLE);
         }
         info = ((MyApplication) getContext().getApplicationContext()).getInfo();
-        aMapLocation=((MyApplication) getContext().getApplicationContext()).getLocation();
     }
 
     @Override
@@ -99,38 +101,61 @@ public class FragOrderList extends BaseFragment implements SwipeRefreshLayout.On
 
     @Override
     protected void initListener() {
-        if (status==null||!status.equals("UnPayed1"))listview.setOnScrollListener(new OnScrollListener());
+        if (status==null||!status.equals("ExchangeOrderFragment"))
+            listview.setOnScrollListener(new OnScrollListener());
         srl.setOnRefreshListener(this);
     }
 
     @Override
     protected void loadData() {
-        if (status!=null&&status.equals("UnPayed1")){
-            dbManagerOrder=new DBManagerOrder(getActivity());
-            List<OrderEntity> orders = adapter.getData();
-            if (orders == null) {
-                orders=new ArrayList<>();
-                orders.addAll(dbManagerOrder.queryList());
-            }
-            firstLoad = false;
-            if (!orders.isEmpty()){
-                adapter.notifyDataSetChanged(orders);
-                noOrder.setVisibility(View.GONE);
-            }else noOrder.setVisibility(View.VISIBLE);
-            if (srl!=null)srl.setRefreshing(false);
-        }else
+//        if (status!=null&&status.equals("ExchangeOrderFragment")){
+//            dbManagerOrder=new DBManagerOrder(getActivity());
+//            List<OrderEntity> orders=new ArrayList<>();
+//            orders.addAll(dbManagerOrder.queryList());
+//            firstLoad = false;
+//            if (!orders.isEmpty()){
+//                adapter.notifyDataSetChanged(orders);
+//                if (noOrder!=null)noOrder.setVisibility(View.GONE);
+//            }else if (noOrder!=null)noOrder.setVisibility(View.VISIBLE);
+//            if (srl!=null)srl.setRefreshing(false);
+//        }else
             synchronized (info) {
             if (!firstLoad && srl != null && !srl.isRefreshing()) return;
             firstLoad = false;
             Map<String, Object> map = new HashMap<>();
             map.put("userId", info.getId());
             map.put("pageNum", ++page);
-            map.put("numPerPage", 20);
+            map.put("numPerPage", 100);
             if (rob != null) map.put("rob", rob);
-            else map.put("status", status);
+            else{
+                switch (status) {
+                    case "UnPayed1":
+                        map.put("startDate", getTime());
+                        map.put("status", "UnPayed");
+                        break;
+                    case "ExchangeOrderFragment":
+                        Map<String, Object> params = new HashMap<>();
+                        params.put("userId", info.getId());
+                        newCall(Config.Url.getUrl(Config.GetExchangeOrder), params);
+                        isExchange=true;
+                        break;
+                    default:
+                        map.put("status", status);
+                        break;
+                }
+            }
+            if (isExchange){
+                isExchange=false;
+                return;
+            }
             if (!isEmpty(type)) map.put("type", type);
             newCall(Config.Url.getUrl(Config.ROBORDER), map);
         }
+    }
+
+    private String getTime() {
+        Calendar cal=Calendar.getInstance();
+        return (cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH) + 1)+"-"+cal.get(Calendar.DAY_OF_MONTH));
     }
 
     @Override
@@ -151,11 +176,18 @@ public class FragOrderList extends BaseFragment implements SwipeRefreshLayout.On
     public void onSuccess(Object tag, JSONObject json) throws JSONException {
         switch (tag.toString()) {
             case Config.ROBORDER:
+            case Config.GetExchangeOrder:
                 List<OrderEntity> orders = adapter.getData();
                 if (orders == null) orders = new ArrayList<>();
                 if (page == 1 && !orders.isEmpty()) orders.clear();
-                JSONArray arr = json.getJSONObject("ordersInfo").getJSONArray("aaData");
-                Log.e("order","丢了个雷姆"+arr);
+                JSONArray arr=new JSONArray();
+                if (tag.toString().equals(Config.GetExchangeOrder)){
+//                    Log.e("GetExchangeOrder",""+json);
+                    //数据结构 json.getJSONObject("ordersInfo").getJSONArray("aaData") 不正确  不执行下面代码
+                    arr = json.getJSONArray("listorder");
+                }else {
+                    arr = json.getJSONObject("ordersInfo").getJSONArray("aaData");
+                }
                 Gson gson = new Gson();
                 for (int i = 0; i < arr.length(); i++) {
                     final JSONObject cache = arr.getJSONObject(i);
@@ -213,6 +245,7 @@ public class FragOrderList extends BaseFragment implements SwipeRefreshLayout.On
         public void onScroll(AbsListView view, int firstVisibleItem,
                              int visibleItemCount, int totalItemCount) {
             if (firstVisibleItem + visibleItemCount > listview.getAdapter().getCount() - 5
+                    //                          Count 计数 % 除法中的余
                     && listview.getAdapter().getCount() % 20 == 0
                     && listview.getAdapter().getCount() != 0) {
                 loadData();

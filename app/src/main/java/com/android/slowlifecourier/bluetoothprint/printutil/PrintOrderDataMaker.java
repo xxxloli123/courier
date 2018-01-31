@@ -33,8 +33,6 @@ public class PrintOrderDataMaker implements PrintDataMaker {
         this.orderEntity=orderEntity;
     }
 
-
-
     @Override
     public List<byte[]> getPrintData(int type) {
         ArrayList<byte[]> data = new ArrayList<>();
@@ -49,7 +47,6 @@ public class PrintOrderDataMaker implements PrintDataMaker {
 //            ArrayList<byte[]> image1 = printer.getImageByte(btService.getResources(), R.drawable.hear3);
 //
 //            data.addAll(image1);
-
 //            printer.setAlignLeft();
 //            printer.printLine();
 //            printer.printLineFeed();
@@ -57,7 +54,7 @@ public class PrintOrderDataMaker implements PrintDataMaker {
 //            printer.printLineFeed();
 //            printer.setAlignCenter();
 //            printer.setEmphasizedOn();
-//            printer.setFontSize(2);
+            printer.setFontSize(1);
 //            printer.print(orderEntity.getReceiverName());
 //            printer.printLineFeed();
 //            printer.setEmphasizedOff();
@@ -77,14 +74,28 @@ public class PrintOrderDataMaker implements PrintDataMaker {
 
 
             printer.setAlignCenter();//设置居中
-            printer.print("公司: " + orderEntity.getUserChoiceCommpanyName());
             printer.printLineFeed();
-            printer.print("姓名: " + orderEntity.getReceiverName());
+            printer.print(orderEntity.getUserChoiceCommpanyName());
             printer.printLineFeed();
-            printer.print("电话: " +orderEntity.getReceiverPhone());
+            printer.setAlignLeft();
             printer.printLineFeed();
-            printer.print("地址: " + orderEntity.getEndHouseNumber());
+            printer.print("发件人" );
             printer.printLineFeed();
+            printer.print("名字 ：" + orderEntity.getCreateUserName());
+            printer.printLineFeed();
+            printer.print("电话：" +orderEntity.getCreateUserPhone());
+            printer.printLineFeed();
+            printer.print("地址：" +orderEntity.getStartStreet()+"  "+ orderEntity.getStartHouseNumber());
+            printer.printLineFeed();
+            printer.printLineFeed();
+            printer.print("收件人");
+            printer.printLineFeed();
+            printer.print("名字 ：" + orderEntity.getCreateUserName());
+            printer.printLineFeed();
+            printer.print("电话:" +orderEntity.getReceiverPhone());
+            printer.printLineFeed();
+            printer.print("地址：" +orderEntity.getEndPro()+"  "+orderEntity.getEndCity()+"  " +
+                    orderEntity.getEndDistrict()+"  "+orderEntity.getEndStreet()+ "　"+orderEntity.getEndHouseNumber());
             printer.printLineFeed();
             printer.printLineFeed();
             printer.printLineFeed();
